@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hong Hui Studio — The Future of Production</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1211;
+    --surface:#121B19;
+    --surface-2:#182420;
+    --ivory:#EDE6D8;
+    --ivory-dim:#A7A296;
+    --brass:#C99A46;
+    --brass-bright:#E3B863;
+    --jade:#5C8B7B;
+    --line: rgba(237,230,216,0.10);
+    --line-strong: rgba(237,230,216,0.18);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ivory);
+    font-family:'Manrope', sans-serif;
+    font-weight:400;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--brass); color:var(--bg); }
+
+  /* film grain */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:999;
+    opacity:0.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--brass);
+  }
+  h1,h2,h3{ font-family:'Fraunces', serif; font-weight:500; letter-spacing:-0.01em; }
+  .container{ max-width:1180px; margin:0 auto; padding:0 32px; }
+  a{ color:inherit; text-decoration:none; }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:500;
+    padding:22px 0;
+    transition: background .4s ease, padding .4s ease, border-color .4s ease;
+    border-bottom:1px solid transparent;
+  }
+  nav.scrolled{
+    background:rgba(11,18,17,0.86);
+    backdrop-filter: blur(14px);
+    padding:14px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{ display:flex; align-items:center; justify-content:space-between; }
+  .logo{ display:flex; align-items:center; gap:10px; font-family:'Fraunces', serif; font-size:1.15rem; letter-spacing:0.02em; }
+  .logo .mark-char{ font-size:1.3rem; color:var(--brass); }
+  .logo .sub{ font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; color:var(--ivory-dim); display:block; margin-top:1px;}
+  .nav-links{ display:flex; gap:38px; font-size:0.86rem; }
+  .nav-links a{ position:relative; color:var(--ivory-dim); transition:color .25s; }
+  .nav-links a:hover{ color:var(--ivory); }
+  .nav-links a::after{
+    content:""; position:absolute; left:0; bottom:-6px; width:0; height:1px; background:var(--brass);
+    transition:width .3s ease;
+  }
+  .nav-links a:hover::after{ width:100%; }
+  .nav-cta{
+    font-size:0.8rem; font-family:'IBM Plex Mono',monospace; letter-spacing:0.04em;
+    border:1px solid var(--line-strong); padding:9px 18px; border-radius:2px;
+    transition: border-color .25s, background .25s;
+  }
+  .nav-cta:hover{ border-color:var(--brass); background:rgba(201,154,70,0.08); }
+  .menu-btn{
+    display:none; background:none; border:none; color:var(--ivory); padding:4px; cursor:pointer;
+  }
+  .mobile-menu{
+    display:none; flex-direction:column; gap:2px;
+    max-height:0; overflow:hidden; transition:max-height .35s ease;
+  }
+  .mobile-menu.open{ max-height:260px; }
+  .mobile-menu a{
+    padding:16px 32px; font-size:0.95rem; color:var(--ivory-dim); border-top:1px solid var(--line);
+  }
+  .mobile-menu a:hover{ color:var(--ivory); }
+
+  /* ---------- HERO : drag reveal ---------- */
+  .hero{
+    position:relative; height:100vh; min-height:640px; overflow:hidden;
+    display:flex; align-items:flex-end;
+  }
+  .reveal{
+    position:absolute; inset:0; cursor:ew-resize; user-select:none;
+  }
+  .reveal-layer{
+    position:absolute; inset:0;
+    background-size:cover; background-position:center;
+  }
+  .layer-before .bottle{ position:absolute; left:28%; top:50%; transform:translate(-50%,-50%); }
+  .layer-after .bottle{ position:absolute; left:72%; top:50%; transform:translate(-50%,-50%); }
+  .layer-before{
+    background:
+      radial-gradient(ellipse at 50% 55%, rgba(90,80,60,0.5), transparent 60%),
+      linear-gradient(180deg,#3a352c,#1c1912 70%);
+    filter:saturate(0.55) brightness(0.85);
+  }
+  .layer-before .tag{ position:absolute; bottom:14%; left:8%; }
+  .layer-after{
+    background:
+      radial-gradient(ellipse at 30% 30%, rgba(201,154,70,0.35), transparent 55%),
+      radial-gradient(ellipse at 75% 70%, rgba(92,139,123,0.35), transparent 55%),
+      linear-gradient(160deg,#1c2b26,#0b1211 75%);
+    animation: driftBG 18s ease-in-out infinite alternate;
+  }
+  @keyframes driftBG{
+    0%{ background-position:0% 0%, 0% 0%, 0% 0%; }
+    100%{ background-position:8% 6%, -6% -8%, 0% 0%; }
+  }
+  .layer-after::after{
+    content:""; position:absolute; inset:0;
+    background:repeating-linear-gradient(115deg, rgba(237,230,216,0.02) 0 2px, transparent 2px 6px);
+    mix-blend-mode:overlay;
+  }
+  .clip-wrap{ position:absolute; inset:0; overflow:hidden; }
+
+  .bottle{
+    position:relative; width:220px; height:340px;
+  }
+  .bottle svg{ width:100%; height:100%; }
+
+  .handle{
+    position:absolute; top:0; bottom:0; width:2px; background:var(--brass-bright);
+    box-shadow:0 0 24px rgba(227,184,99,0.5);
+    z-index:20; pointer-events:none;
+  }
+  .handle-grip{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:52px; height:52px; border-radius:50%;
+    background:var(--bg); border:1px solid var(--brass);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 24px rgba(0,0,0,0.5);
+  }
+  .handle-grip svg{ width:20px; height:20px; }
+
+  .hero-labels{
+    position:absolute; inset:0; z-index:15; pointer-events:none;
+  }
+  .hero-label{
+    position:absolute; top:26px; font-family:'IBM Plex Mono',monospace;
+    font-size:0.68rem; letter-spacing:0.14em; text-transform:uppercase;
+    padding:6px 12px; border:1px solid var(--line-strong); border-radius:2px;
+    background:rgba(11,18,17,0.55); backdrop-filter:blur(6px);
+  }
+  .hero-label.left{ left:5%; margin-top:96px; color:var(--ivory-dim); }
+  .hero-label.right{ right:5%; margin-top:96px; color:var(--brass-bright); border-color:rgba(201,154,70,0.4); }
+
+  .hero-content{
+    position:relative; z-index:30; width:100%;
+    padding:0 0 74px 0;
+    pointer-events:none;
+  }
+  .hero-content .container{ pointer-events:auto; }
+  .hero h1{
+    font-size:clamp(2.6rem, 6vw, 4.6rem);
+    line-height:1.02;
+    max-width:820px;
+    color:var(--ivory);
+    text-shadow:0 4px 40px rgba(0,0,0,0.5);
+  }
+  .hero h1 em{ font-style:italic; color:var(--brass-bright); }
+  .hero .sub{
+    margin-top:20px; font-size:1.08rem; color:var(--ivory-dim); max-width:480px;
+    font-family:'Fraunces', serif; font-style:italic; font-weight:400;
+  }
+  .cta-row{ display:flex; gap:16px; margin-top:36px; flex-wrap:wrap; }
+  .btn{
+    font-family:'IBM Plex Mono', monospace; font-size:0.82rem; letter-spacing:0.03em;
+    padding:15px 26px; border-radius:2px; display:inline-flex; align-items:center; gap:10px;
+    transition: transform .25s, background .25s, border-color .25s;
+  }
+  .btn-primary{ background:var(--brass); color:#161009; font-weight:500; }
+  .btn-primary:hover{ background:var(--brass-bright); transform:translateY(-2px); }
+  .btn-ghost{ border:1px solid var(--line-strong); color:var(--ivory); }
+  .btn-ghost:hover{ border-color:var(--ivory); transform:translateY(-2px); }
+  .btn svg{ width:14px; height:14px; }
+
+  .scroll-cue{
+    position:absolute; bottom:26px; right:32px; z-index:30;
+    font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.16em;
+    color:var(--ivory-dim); writing-mode:vertical-rl; text-transform:uppercase;
+    display:flex; align-items:center; gap:10px;
+  }
+  .scroll-cue .line{ width:1px; height:40px; background:var(--line-strong); position:relative; overflow:hidden; }
+  .scroll-cue .line::after{
+    content:""; position:absolute; top:-40px; left:0; width:100%; height:40px; background:var(--brass);
+    animation: scrollLine 2.2s ease-in-out infinite;
+  }
+  @keyframes scrollLine{ 0%{ top:-40px; } 100%{ top:40px; } }
+
+  /* ---------- SECTION SCAFFOLD ---------- */
+  section{ padding:130px 0; position:relative; }
+  .section-head{ max-width:640px; margin-bottom:64px; }
+  .section-head h2{ font-size:clamp(1.9rem,3.4vw,2.7rem); margin-top:14px; }
+  .section-head p{ color:var(--ivory-dim); margin-top:16px; font-size:1.02rem; max-width:520px; }
+
+  .reveal-on-scroll{ opacity:0; transform:translateY(28px); transition:opacity .8s ease, transform .8s ease; }
+  .reveal-on-scroll.in{ opacity:1; transform:translateY(0); }
+
+  /* ---------- SERVICES ---------- */
+  .services{ background:var(--surface); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .service-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+  .service-card{
+    background:var(--surface); padding:44px 36px; transition:background .35s;
+    display:flex; flex-direction:column; gap:20px;
+  }
+  .service-card:hover{ background:var(--surface-2); }
+  .service-glyph{ width:38px; height:38px; color:var(--brass); }
+  .service-card h3{ font-size:1.3rem; font-weight:500; }
+  .service-card p{ color:var(--ivory-dim); font-size:0.94rem; }
+  .service-tag{
+    margin-top:auto; font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+    letter-spacing:0.1em; text-transform:uppercase; color:var(--jade);
+  }
+
+  /* ---------- PORTFOLIO ---------- */
+  .work-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  .work-card{
+    aspect-ratio:4/5; border-radius:4px; overflow:hidden; position:relative;
+    border:1px solid var(--line); cursor:pointer;
+  }
+  .work-thumb{ position:absolute; inset:0; background-size:cover; background-position:center; transition:transform .6s ease; }
+  .work-card:hover .work-thumb{ transform:scale(1.06); }
+  .thumb-a{ background:radial-gradient(circle at 30% 20%, #3c2f18, #0e1512 70%); }
+  .thumb-b{ background:radial-gradient(circle at 70% 30%, #24312c, #0b1211 70%); }
+  .thumb-c{ background:radial-gradient(circle at 50% 70%, #2e2418, #101815 70%); }
+  .work-card::after{ content:""; position:absolute; inset:0; background:linear-gradient(0deg, rgba(11,18,17,0.92), transparent 55%); pointer-events:none; }
+  .work-card{ isolation:isolate; transition:transform .35s ease, border-color .35s ease; }
+  .work-card:hover{ transform:translateY(-5px); border-color:rgba(201,154,70,.45); }
+  .work-video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; background:#000; z-index:1; }
+  .work-card::after{ z-index:2; }
+  .work-meta{ z-index:3; }
+  .play{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:56px; height:56px; border-radius:50%;
+    border:1px solid rgba(237,230,216,0.55);
+    display:flex; align-items:center; justify-content:center; z-index:3;
+    background:rgba(11,18,17,.35); backdrop-filter:blur(5px);
+    transition:border-color .3s, background .3s, transform .3s;
+  }
+  .work-card:hover .play{
+    border-color:var(--brass); background:rgba(201,154,70,.16);
+    transform:translate(-50%,-50%) scale(1.05);
+  }
+  .play svg{ width:17px; height:17px; margin-left:2px; }
+  .work-thumb{ transition:transform .6s ease; }
+  .work-card:hover .work-thumb{ transform:scale(1.06); }
+  .thumb-coconut-plot{
+    background:
+      radial-gradient(circle at 25% 25%, rgba(201,154,70,.42), transparent 36%),
+      radial-gradient(circle at 72% 65%, rgba(92,139,123,.34), transparent 42%),
+      linear-gradient(145deg,#27352d,#0b1211 72%);
+  }
+  .work-meta{ position:absolute; left:20px; right:20px; bottom:18px; z-index:3; }
+  .compare-label{
+    position:absolute; top:18px; z-index:5;
+    padding:7px 10px; border:1px solid rgba(237,230,216,.28);
+    background:rgba(11,18,17,.62); backdrop-filter:blur(7px);
+    color:var(--ivory-dim); font:500 .58rem 'IBM Plex Mono',monospace;
+    letter-spacing:.09em;
+  }
+  .before-label{ left:18px; }
+  .after-label{ right:18px; color:var(--brass-bright); }
+
+  .work-meta .eyebrow{ margin-bottom:4px; }
+  .work-meta h4{ font-family:'Fraunces',serif; font-weight:500; font-size:1.05rem; }
+
+  /* case study slider */
+  .case-study{
+    margin-top:90px; border:1px solid var(--line); border-radius:6px; overflow:hidden;
+    display:grid; grid-template-columns:1.1fr 0.9fr;
+  }
+  .case-visual{ position:relative; aspect-ratio:1/1; }
+  .case-copy{ padding:48px; background:var(--surface); display:flex; flex-direction:column; justify-content:center; }
+  .case-copy h3{ font-size:1.6rem; margin-top:10px; }
+  .case-copy p{ color:var(--ivory-dim); margin-top:14px; }
+  .prompt-block{
+    margin-top:28px; padding:18px 20px; background:var(--bg); border:1px solid var(--line);
+    border-radius:4px; font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--jade);
+    line-height:1.7;
+  }
+  .prompt-block .arrow{ color:var(--brass); }
+  .stat-row{ display:flex; gap:28px; margin-top:28px; }
+  .stat-row div{ font-family:'IBM Plex Mono',monospace; }
+  .stat-row .num{ font-size:1.4rem; color:var(--brass); }
+  .stat-row .lab{ font-size:0.65rem; letter-spacing:0.1em; color:var(--ivory-dim); text-transform:uppercase; margin-top:4px;}
+
+  /* ---------- ABOUT / PIPELINE ---------- */
+  .about{ background:var(--surface); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .about-grid{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:60px; align-items:start; }
+  .mission h2{ font-size:clamp(1.9rem,3.2vw,2.5rem); }
+  .mission p{ color:var(--ivory-dim); margin-top:20px; font-size:1.02rem; }
+  .mission .stat-strip{ display:flex; gap:36px; margin-top:40px; flex-wrap:wrap; }
+  .mission .stat-strip .num{ font-family:'Fraunces',serif; font-size:2rem; color:var(--brass); }
+  .mission .stat-strip .lab{ font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--ivory-dim); letter-spacing:0.08em; text-transform:uppercase; margin-top:6px; }
+
+  .pipeline-label{ margin-bottom:22px; }
+  .pipeline{ display:flex; flex-direction:column; }
+  .pipe-step{
+    display:grid; grid-template-columns:44px 1fr; gap:20px; padding:22px 0; border-top:1px solid var(--line);
+    position:relative;
+  }
+  .pipe-step:last-child{ border-bottom:1px solid var(--line); }
+  .pipe-num{ font-family:'IBM Plex Mono',monospace; color:var(--brass); font-size:0.85rem; padding-top:3px; }
+  .pipe-body h4{ font-family:'Fraunces',serif; font-weight:500; font-size:1.08rem; }
+  .pipe-body p{ color:var(--ivory-dim); font-size:0.88rem; margin-top:6px; max-width:440px; }
+  .pipe-connector{
+    position:absolute; left:21px; top:100%; width:1px; height:22px; background:var(--line-strong); z-index:2;
+  }
+  .pipe-step:last-child .pipe-connector{ display:none; }
+
+  /* ---------- CONTACT ---------- */
+  .contact-grid{ display:grid; grid-template-columns:1fr 0.75fr; gap:70px; }
+  .field{ margin-bottom:22px; }
+  .field label{ display:block; font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ivory-dim); margin-bottom:9px; }
+  .field input, .field select, .field textarea{
+    width:100%; background:transparent; border:none; border-bottom:1px solid var(--line-strong);
+    color:var(--ivory); font-family:'Manrope',sans-serif; font-size:0.98rem; padding:11px 2px;
+    outline:none; transition:border-color .25s;
+    appearance:none; -webkit-appearance:none;
+  }
+  .field select{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23A7A296'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 4px center;
+  }
+  .field select option{ background:var(--surface); color:var(--ivory); }
+  .field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--brass); }
+  .field textarea{ resize:vertical; min-height:90px; }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  .submit-note{
+    margin-top:8px; font-family:'IBM Plex Mono',monospace; font-size:0.76rem; color:var(--jade);
+    opacity:0; transition:opacity .3s;
+  }
+  .submit-note.show{ opacity:1; }
+
+  .contact-side{ display:flex; flex-direction:column; gap:34px; }
+  .contact-block .eyebrow{ margin-bottom:10px; }
+  .contact-block a, .contact-block p{ font-size:0.98rem; }
+  .contact-block a{ color:var(--ivory); border-bottom:1px solid var(--line-strong); padding-bottom:2px; transition:border-color .25s, color .25s; }
+  .contact-block a:hover{ color:var(--brass-bright); border-color:var(--brass); }
+  .social-row{ display:flex; gap:18px; margin-top:6px; }
+  .social-row a{ font-family:'IBM Plex Mono',monospace; font-size:0.78rem; border:none; padding:0; }
+
+  footer{ border-top:1px solid var(--line); padding:34px 0; }
+  .footer-inner{ display:flex; justify-content:space-between; align-items:center; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; color:var(--ivory-dim); letter-spacing:0.04em; }
+
+  @media (max-width: 880px){
+    .nav-links{ display:none; }
+    .nav-cta{ display:none; }
+    .menu-btn{ display:block; }
+    .mobile-menu{ display:flex; background:rgba(11,18,17,0.97); backdrop-filter:blur(14px); }
+    .service-grid{ grid-template-columns:1fr; }
+    .work-grid{ grid-template-columns:1fr; }
+    .case-study{ grid-template-columns:1fr; }
+    .about-grid{ grid-template-columns:1fr; gap:50px; }
+    .contact-grid{ grid-template-columns:1fr; gap:48px; }
+    .field-row{ grid-template-columns:1fr; }
+    .hero-label.left, .hero-label.right{ margin-top:80px; font-size:0.6rem; padding:5px 9px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
+  }
+
+  #caseClipWrap{ overflow:hidden; }
+  #caseClipWrap .layer-after{
+    width:100%;
+    height:100%;
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+  }
+
+
+  #caseReveal .layer-before,
+  #caseReveal .layer-after{
+    background-size:cover !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+  }
+  #caseReveal .layer-before{ filter:none; }
+
+
+  .case-toggle-visual{position:relative;min-height:520px;overflow:hidden;background:#0b1211}
+  .case-image{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;transform:scale(1.045);filter:blur(5px);transition:opacity .65s cubic-bezier(.22,1,.36,1),transform 1.1s cubic-bezier(.22,1,.36,1),filter .7s cubic-bezier(.22,1,.36,1)}
+  .case-image.active{opacity:1;transform:scale(1);filter:blur(0)}
+  .case-before{background-image:url('./images/coconut-before.jpg')}
+  .case-after{background-image:url('./images/coconut-after.jpg')}
+  .case-vignette{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(7,12,11,.18),transparent 35%,rgba(7,12,11,.78)),radial-gradient(circle at 50% 40%,transparent 25%,rgba(7,12,11,.28) 100%)}
+  .case-state-label{position:absolute;top:22px;left:22px;z-index:4;display:flex;align-items:center;gap:9px;padding:8px 11px;border:1px solid rgba(237,230,216,.22);background:rgba(7,12,11,.58);backdrop-filter:blur(10px);color:var(--ivory);font:500 .61rem 'IBM Plex Mono',monospace;letter-spacing:.09em;text-transform:uppercase}
+  .state-dot{width:6px;height:6px;border-radius:50%;background:var(--brass-bright);box-shadow:0 0 12px rgba(227,184,99,.7)}
+  .case-controls{position:absolute;left:50%;bottom:25px;z-index:5;transform:translateX(-50%);display:flex;gap:4px;padding:4px;border:1px solid rgba(237,230,216,.18);background:rgba(7,12,11,.7);backdrop-filter:blur(14px)}
+  .case-toggle{border:0;background:transparent;color:rgba(237,230,216,.62);padding:10px 14px;cursor:pointer;font:500 .62rem 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;transition:background .3s,color .3s,transform .3s}
+  .case-toggle span{opacity:.5;margin-right:6px}
+  .case-toggle:hover{color:var(--ivory)}
+  .case-toggle.active{color:var(--ivory);background:rgba(201,154,70,.17);box-shadow:inset 0 0 0 1px rgba(201,154,70,.28)}
+  .case-toggle:active{transform:scale(.97)}
+  .case-progress{position:absolute;left:0;right:0;bottom:0;height:2px;z-index:6;background:rgba(237,230,216,.12)}
+  .progress-fill{display:block;height:100%;width:50%;background:var(--brass);transition:width .65s cubic-bezier(.22,1,.36,1)}
+  @media(max-width:700px){.case-toggle-visual{min-height:390px}.case-controls{bottom:18px}.case-toggle{padding:9px 11px;font-size:.57rem}.case-state-label{top:15px;left:15px}}
+
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="container nav-inner">
+    <div class="logo">
+      <span class="mark-char">弘</span>
+      <span>Hong Hui Studio<span class="sub">AI PRODUCTION HOUSE</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#work">Portfolio</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a href="#contact" class="nav-cta">Start a Project</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#services">Services</a>
+    <a href="#work">Portfolio</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="reveal" id="reveal">
+    <div class="reveal-layer layer-before">
+      <div class="bottle" style="filter:grayscale(0.4)">
+        <svg viewBox="0 0 100 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="30" y="10" width="12" height="14" rx="2" fill="#6b6152"/>
+          <path d="M20 30 Q20 24 30 22 H42 Q52 24 52 30 V145 Q52 152 44 152 H28 Q20 152 20 145 Z" fill="#8a7c63" stroke="#d8cdb8" stroke-opacity="0.3"/>
+          <rect x="24" y="70" width="24" height="34" rx="2" fill="#d8cdb8" opacity="0.15"/>
+        </svg>
+      </div>
+    </div>
+    <div class="clip-wrap" id="clipWrap">
+      <div class="reveal-layer layer-after">
+        <div class="bottle">
+          <svg viewBox="0 0 100 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#E3B863"/>
+                <stop offset="100%" stop-color="#5C8B7B"/>
+              </linearGradient>
+            </defs>
+            <rect x="30" y="6" width="12" height="16" rx="2" fill="#C99A46"/>
+            <path d="M20 30 Q20 22 30 20 H42 Q52 22 52 30 V145 Q52 154 44 154 H28 Q20 154 20 145 Z" fill="url(#glass)" opacity="0.85"/>
+            <rect x="24" y="66" width="24" height="36" rx="2" fill="#0B1211" opacity="0.35"/>
+            <circle cx="10" cy="40" r="2" fill="#E3B863" opacity="0.8"/>
+            <circle cx="88" cy="90" r="1.6" fill="#5C8B7B" opacity="0.8"/>
+            <circle cx="14" cy="120" r="1.2" fill="#E3B863" opacity="0.6"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="handle" id="handle" style="left:50%">
+      <div class="handle-grip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#E3B863" stroke-width="1.6"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg>
+      </div>
+    </div>
+    <div class="hero-labels">
+      <div class="hero-label left">Before</div>
+      <div class="hero-label right">After</div>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <div class="container">
+      <h1>The Future of<br>Production at <em>Hong&nbsp;Hui&nbsp;Studio</em></h1>
+      <p class="sub">Next-generation AI filmmaking, short animation, and dynamic product advertising.</p>
+      <div class="cta-row">
+        <a href="#work" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 19L19 5M8 5h11v11"/></svg>
+          Explore Our Work
+        </a>
+        <a href="#contact" class="btn btn-ghost">Start a Project →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-cue"><div class="line"></div>Drag to reveal</div>
+</header>
+
+<!-- ================= SERVICES ================= -->
+<section class="services" id="services">
+  <div class="container">
+    <div class="section-head reveal-on-scroll">
+      <span class="eyebrow">Core Services</span>
+      <h2>Three ways we replace<br>the traditional shoot.</h2>
+    </div>
+  </div>
+  <div class="container">
+    <div class="service-grid reveal-on-scroll">
+      <div class="service-card">
+        <svg class="service-glyph" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="10" width="20" height="24" rx="2"/><path d="M26 17l8-5v16l-8-5"/></svg>
+        <h3>AI Product Advertising</h3>
+        <p>Static product photos become fully animated, cinematic commercials through advanced image-to-video pipelines. No physical photoshoot required.</p>
+        <span class="service-tag">Photo → Scene → Motion</span>
+      </div>
+      <div class="service-card">
+        <svg class="service-glyph" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="9" y="5" width="14" height="30" rx="3"/><circle cx="16" cy="30" r="1.2" fill="currentColor" stroke="none"/><path d="M27 14l7 4-7 4"/></svg>
+        <h3>Short-Form Animation</h3>
+        <p>Stylized, rapid-turnaround animation built for social feeds — optimized for TikTok, YouTube Shorts, and campaign cutdowns.</p>
+        <span class="service-tag">Built for vertical</span>
+      </div>
+      <div class="service-card">
+        <svg class="service-glyph" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 12h28l-3 18H9z"/><circle cx="13" cy="16" r="1.3" fill="currentColor" stroke="none"/><circle cx="27" cy="16" r="1.3" fill="currentColor" stroke="none"/></svg>
+        <h3>Cinematic AI Filmmaking</h3>
+        <p>Concept trailers, dynamic storyboarding, and complete short films — AI-generated environments, characters, and realistic motion mapping.</p>
+        <span class="service-tag">Story to screen</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PORTFOLIO ================= -->
+<section id="work">
+  <div class="container">
+    <div class="section-head reveal-on-scroll">
+      <span class="eyebrow">Portfolio &amp; Case Studies</span>
+      <h2>Selected work.</h2>
+      <p>A focused selection of campaign films and AI-generated visual work from the studio.</p>
+    </div>
+
+    <div class="work-grid reveal-on-scroll">
+      <div class="work-card">
+        <video class="work-video" src="videos/coconut-oil-tropical-hero.mp4"
+               autoplay muted loop playsinline preload="auto"></video>
+        <div class="work-meta">
+          <span class="eyebrow">Product Advertisement</span>
+          <h4>Coconut Oil — Tropical Hero</h4>
+        </div>
+      </div>
+
+      <div class="work-card">
+        <video class="work-video" src="videos/coconut-plot-ad.mp4"
+               autoplay muted loop playsinline preload="auto"></video>
+        <div class="work-meta">
+          <span class="eyebrow">Product Advertisement</span>
+          <h4>Coconut Plot — Campaign Ad</h4>
+        </div>
+      </div>
+
+      <div class="work-card">
+        <video class="work-video" src="videos/the-last-harbor.mp4"
+               autoplay muted loop playsinline preload="auto"></video>
+        <div class="work-meta">
+          <span class="eyebrow">Concept Trailer</span>
+          <h4>The Last Harbor</h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- case study before/after -->
+    <div class="case-study reveal-on-scroll">
+      <div class="case-visual case-toggle-visual" id="caseReveal">
+        <div class="case-image case-before active" data-state="before"></div>
+        <div class="case-image case-after" data-state="after"></div>
+        <div class="case-vignette"></div>
+
+        <div class="case-state-label">
+          <span class="state-dot"></span>
+          <span id="caseStateText">Original Product</span>
+        </div>
+
+        <div class="case-controls" role="group" aria-label="Compare original product and AI-generated scene">
+          <button class="case-toggle active" type="button" data-state="before"><span>01</span> Original</button>
+          <button class="case-toggle" type="button" data-state="after"><span>02</span> AI Scene</button>
+        </div>
+
+        <div class="case-progress"><span class="progress-fill" id="caseProgress"></span></div>
+      </div>
+      <div class="case-copy">
+        <span class="eyebrow">Prompt-to-Screen Breakdown</span>
+        <h3>Coconut Oil — Pilot Advertisement</h3>
+        <p>One product photo, five prompted scenes, one 22-second cut. Use the Original and AI Scene buttons to compare the original coconut product photo with the finished AI-generated scene. No location shoot, no model booking.</p>
+        <div class="prompt-block">
+          <span style="color:var(--ivory-dim)">PROMPT</span> — "Product standing on a clean luxury surface, surrounded by coconuts and tropical leaves, cinematic light"<br>
+          <span class="arrow">→</span> <span style="color:var(--ivory-dim)">OUTPUT</span> — 5s hero shot, image-to-video, tropical scene
+        </div>
+        <div class="stat-row">
+          <div><div class="num">5</div><div class="lab">Scenes</div></div>
+          <div><div class="num">0</div><div class="lab">Physical shoots</div></div>
+          <div><div class="num">22s</div><div class="lab">Final cut</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================= ABOUT ================= -->
+<section class="about" id="about">
+  <div class="container about-grid">
+    <div class="mission reveal-on-scroll">
+      <span class="eyebrow">The Mission</span>
+      <h2>A pioneer in digital production.</h2>
+      <p>Hong Hui Studio pairs high-end cinematic craft with an AI-native pipeline — delivering visuals traditional production can't match for speed, and traditional AI shops can't match for polish.</p>
+      <div class="stat-strip">
+        <div><div class="num">10×</div><div class="lab">Faster to first cut</div></div>
+        <div><div class="num">0</div><div class="lab">Location shoots needed</div></div>
+        <div><div class="num">5</div><div class="lab">Formats, one pipeline</div></div>
+      </div>
+    </div>
+
+    <div class="reveal-on-scroll">
+      <div class="pipeline-label">
+        <span class="eyebrow">Our Tech-Driven Pipeline</span>
+        <h3 style="font-size:1.5rem; margin-top:10px;">Concept to final cut, four stages.</h3>
+      </div>
+      <div class="pipeline">
+        <div class="pipe-step">
+          <div class="pipe-num">01</div>
+          <div class="pipe-body"><h4>Concept</h4><p>Creative direction, script and shot list defined before a single frame is generated.</p></div>
+          <div class="pipe-connector"></div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-num">02</div>
+          <div class="pipe-body"><h4>Image Generation</h4><p>Environments, characters and product scenes rendered and approved as stills first.</p></div>
+          <div class="pipe-connector"></div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-num">03</div>
+          <div class="pipe-body"><h4>AI Animation</h4><p>Approved stills animated with image-to-video generation and camera direction.</p></div>
+          <div class="pipe-connector"></div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-num">04</div>
+          <div class="pipe-body"><h4>Post-Production</h4><p>Human edit, grade, sound and quality control before anything ships to a client.</p></div>
+          <div class="pipe-connector"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact">
+  <div class="container">
+    <div class="section-head reveal-on-scroll">
+      <span class="eyebrow">Contact &amp; Onboarding</span>
+      <h2>Start a project.</h2>
+      <p>Tell us what you're building — a member of the studio will follow up within two business days.</p>
+    </div>
+
+    <div class="contact-grid reveal-on-scroll">
+      <form id="inquiryForm">
+        <div class="field-row">
+          <div class="field">
+            <label for="name">Name</label>
+            <input type="text" id="name" placeholder="Your full name" required>
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="you@company.com" required>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="ptype">Project Type</label>
+            <select id="ptype">
+              <option>Commercial</option>
+              <option>Short-Form Animation</option>
+              <option>Short Film</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="timeline">Timeline</label>
+            <select id="timeline">
+              <option>Under 2 weeks</option>
+              <option>2–4 weeks</option>
+              <option>1–2 months</option>
+              <option>Flexible</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="refs">Visual References (link)</label>
+          <input type="text" id="refs" placeholder="Drive, Dropbox, or Pinterest link — optional">
+        </div>
+        <div class="field">
+          <label for="brief">Project Brief</label>
+          <textarea id="brief" placeholder="What are you making, and who's it for?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="border:none; cursor:pointer;">Send Inquiry →</button>
+        <div class="submit-note" id="submitNote">Inquiry received — someone from the studio will be in touch shortly.</div>
+      </form>
+
+      <div class="contact-side">
+        <div class="contact-block">
+          <span class="eyebrow">Email</span>
+          <a href="mailto:studio@honghui.ai">studio@honghui.ai</a>
+        </div>
+        <div class="contact-block">
+          <span class="eyebrow">Location</span>
+          <p style="color:var(--ivory-dim)">Hong Hui Studio<br>Kigali, Rwanda — working with clients worldwide</p>
+        </div>
+        <div class="contact-block">
+          <span class="eyebrow">Follow</span>
+          <div class="social-row">
+            <a href="#">Instagram</a>
+            <a href="#">TikTok</a>
+            <a href="#">YouTube</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-inner">
+    <span>© 2026 Hong Hui Studio</span>
+    <span>Concept → Image → Animation → Post</span>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu toggle
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuBtn.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', open);
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }));
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal-on-scroll').forEach(el => io.observe(el));
+
+  // Generic drag-reveal slider factory
+  function setupReveal(wrapId, clipId, handleId, initial){
+    const wrap = document.getElementById(wrapId);
+    const clip = document.getElementById(clipId);
+    const handle = document.getElementById(handleId);
+    let dragging = false;
+
+    function setPos(pct){
+      pct = Math.max(4, Math.min(96, pct));
+      clip.style.clipPath = `inset(0 0 0 ${pct}%)`;
+      handle.style.left = pct + '%';
+    }
+    setPos(initial);
+
+    function move(clientX){
+      const rect = wrap.getBoundingClientRect();
+      const pct = ((clientX - rect.left) / rect.width) * 100;
+      setPos(pct);
+    }
+
+    wrap.addEventListener('pointerdown', (e) => { dragging = true; move(e.clientX); });
+    window.addEventListener('pointermove', (e) => { if(dragging) move(e.clientX); });
+    window.addEventListener('pointerup', () => dragging = false);
+    wrap.addEventListener('touchstart', (e) => move(e.touches[0].clientX), {passive:true});
+    wrap.addEventListener('touchmove', (e) => move(e.touches[0].clientX), {passive:true});
+  }
+
+  setupReveal('reveal', 'clipWrap', 'handle', 50);
+
+  // Original / AI Scene toggle
+  const caseImages = document.querySelectorAll('.case-image');
+  const caseButtons = document.querySelectorAll('.case-toggle');
+  const caseStateText = document.getElementById('caseStateText');
+  const caseProgress = document.getElementById('caseProgress');
+
+  caseButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const state = button.dataset.state;
+
+      caseImages.forEach(image => {
+        image.classList.toggle('active', image.dataset.state === state);
+      });
+
+      caseButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.state === state);
+      });
+
+      if (state === 'before') {
+        caseStateText.textContent = 'Original Product';
+        caseProgress.style.width = '50%';
+      } else {
+        caseStateText.textContent = 'AI-Generated Scene';
+        caseProgress.style.width = '100%';
+      }
+    });
+  });
+
+  // Portfolio videos autoplay muted on load.
+  // Muted autoplay is supported by modern browsers; loop keeps each project preview moving.
+  document.querySelectorAll('.work-video').forEach(video => {
+    video.muted = true;
+    video.autoplay = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.play().catch(() => {});
+  });
+
+  // Handle inquiry form submission
+  document.getElementById('inquiryForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    document.getElementById('submitNote').classList.add('show');
+  });
+</script>
+
+</body>
+</html>
